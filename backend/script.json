@@ -1,0 +1,37 @@
+CREATE TABLE tbluser (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(120) UNIQUE NOT NULL,
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50),
+    contact VARCHAR(15),
+    accounts TEXT[],
+    password TEXT,
+    country TEXT,
+    currency VARCHAR(5) NOT NULL DEFAULT 'INR',
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tblaccount (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    account_name VARCHAR(50) NOT NULL,
+    account_number VARCHAR(50) NOT NULL,
+    account_balance NUMERIC(10,2) NOT NULL,
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES tbluser(id)
+);
+
+CREATE TABLE tbltransaction (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    description TEXT NOT NULL,
+    status VARCHAR(10) NOT NULL,
+    source VARCHAR(100) NOT NULL,
+    amount NUMERIC(10,2) NOT NULL,
+    type VARCHAR(10) NOT NULL DEFAULT 'income',
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES tbluser(id)
+);
