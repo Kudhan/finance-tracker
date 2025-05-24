@@ -45,7 +45,7 @@ export const updateUser = async (req, res) => {
 
         const updateUser = await pool.query({
             text: "UPDATE tbluser SET firstname = $1, lastname = $2, country = $3, currency = $4, contact = $5 WHERE id = $6",
-            values: [firstname, lastname, countrt, currency, contact, userId],
+            values: [firstname, lastname, country, currency, contact, userId],
         });
 
         if (updateUser.rowCount === 0) {
