@@ -22,3 +22,5 @@ pool.connect()
   .catch(err => {
     console.error('❌ DB Connection Error:', err.message);
   });
+
+export default pool;
