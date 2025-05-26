@@ -27,3 +27,12 @@ export const createJWT = (id) => {
         { expiresIn: "3d" }
     );
 };
+
+
+export function getMonthName(monthIndex) {
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    return monthNames[monthIndex];
+}
