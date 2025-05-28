@@ -6,7 +6,11 @@ const initialUser = storedUser ? JSON.parse(storedUser) : null;
 const useStore = create((set) => ({
   user: initialUser,
   setCredentials: (user) => {
-    localStorage.setItem('user', JSON.stringify(user));
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
     set({ user });
   },
   signOut: () => {

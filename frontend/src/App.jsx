@@ -8,6 +8,7 @@ import Transactions from './pages/transactions';
 import useStore from './store';
 import { setAuthToken } from './libs/apiCall';
 import { Toaster } from 'react-hot-toast';
+import Navbar from './components/navbar';
 
 const RootLayout = () => {
   const { user } = useStore((state) => state);
@@ -17,6 +18,7 @@ const RootLayout = () => {
   <Navigate to="/signin" replace={true}/>
  ):(
   <>
+  <Navbar />
   <div className="min-h-[calc(100vh-100px)]">
     <Outlet />
   </div>
@@ -27,7 +29,7 @@ const RootLayout = () => {
 function App() {
   return (
     <main>
-      <div className='w-full min-h-screen bg-gray-100 md:px-20 dark:bg-slate-900'>
+      <div className='w-full min-h-screen bg-gray-100 md:px-20'>
         <Routes>
           <Route element={<RootLayout />}>
             <Route path="/" element={<Navigate to="/overview" />} />
