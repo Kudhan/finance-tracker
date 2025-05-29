@@ -1,179 +1,97 @@
-import React, { useEffect, useState } from 'react';
-import { useStore } from 'zustand';
-import { FaBtc, FaPaypal } from 'react-icons/fa';
-import { GiCash } from 'react-icons/gi';
-import { RiVisaLine } from 'react-icons/ri';
-import { MdAdd, MdVerifiedUser } from 'react-icons/md';
-import toast from 'react-hot-toast';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
+import DialogWrapper from './wrappers/dialog-wrapper';
 import api from '../libs/apiCall';
-import Loading from '../components/loading';
-import Title from '../components/title';
-import AccountMenu from '../components/accountDialog';
-import AddAccount from '../components/accountDialog/addAccount';
-// import AddMoney from '../components/accountDialog/addMoney';
-// import TransferMoney from '../components/accountDialog/transferMoney';
+import toast from 'react-hot-toast';
 
-const ICONS = {
-  crypto: (
-    <div className="w-12 h-12 bg-amber-600 text-white flex items-center justify-center rounded-full">
-      <FaBtc size={26} />
-    </div>
-  ),
-  visa: (
-    <div className="w-12 h-12 bg-blue-600 text-white flex items-center justify-center rounded-full">
-      <RiVisaLine size={26} />
-    </div>
-  ),
-  cash: (
-    <div className="w-12 h-12 bg-rose-600 text-white flex items-center justify-center rounded-full">
-      <GiCash size={26} />
-    </div>
-  ),
-  paypal: (
-    <div className="w-12 h-12 bg-blue-700 text-white flex items-center justify-center rounded-full">
-      <FaPaypal size={26} />
-    </div>
-  ),
-};
+const accounts = ["cash", "crypto", "visa", "paypal"];
 
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(value);
-};
+const AddAccount = ({ isOpen, setIsOpen, refetch, existingAccounts = [] }) => {
+  const generateAccountNumber = () => {
+    let account_number = "";
+    while (account_number.length < 13) {
+      const uuid = uuidv4().replace(/-/g, "");
+      account_number += uuid.replace(/\D/g, "");
+    }
+    return account_number.slice(0, 13);
+  };
 
-const AccountPage = () => {
-  const { user } = useStore((state) => state);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpenTransfer, setIsOpenTransfer] = useState(false);
-  const [isOpenTopup, setIsOpenTopup] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState('');
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: {
+      account_name: "cash",
+      account_number: generateAccountNumber(),
+      amount: 0
+    }
+  });
 
-  const fetchAccounts = async () => {
-    setIsLoading(true);
+  const onSubmit = async (data) => {
+    if (existingAccounts.some(acc => acc.name === data.account_name)) {
+      toast.error(`Account of type "${data.account_name}" already exists.`);
+      setIsOpen(false);
+      return;
+    }
+
     try {
-      const { data: res } = await api.get('/account');
-      setData(res?.data);
+      await api.post('/account/create', {
+        name: data.account_name,
+        account_number: data.account_number,
+        amount: Number(data.amount),
+      });
+
+      toast.success("Account added successfully!");
+      reset();
+      setIsOpen(false);
+      if (typeof refetch === "function") {
+        refetch();
+      }
     } catch (error) {
       console.error(error);
-      if (error?.response?.data?.status === 'auth_failed') {
-        localStorage.removeItem('user');
-        window.location.reload();
-      } else {
-        toast.error('Failed to fetch accounts.');
-      }
-    } finally {
-      setIsLoading(false);
+      toast.error("Failed to add account. Please try again.");
     }
   };
 
-  const handleOpenAddMoney = (acc) => {
-    setSelectedAccount(acc?.id);
-    setIsOpenTopup(true);
+  const handleClose = () => {
+    setIsOpen(false);
+    reset();
   };
-
-  const handleTransferMoney = (acc) => {
-    setSelectedAccount(acc?.id);
-    setIsOpenTransfer(true);
-  };
-
-  useEffect(() => {
-    fetchAccounts();
-  }, []);
-
-  if (isLoading) return <Loading />;
 
   return (
-    <>
-      <div className="w-full py-10">
-        <div className="flex items-center justify-between px-6">
-          <Title title="Accounts Information" />
-          <button
-            onClick={() => setIsOpen(true)}
-            className="py-2 px-4 rounded bg-black text-white flex items-center gap-2"
-          >
-            <MdAdd size={22} />
-            <span>Add</span>
-          </button>
+    <DialogWrapper isOpen={isOpen} setIsOpen={handleClose}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <h2 className="text-xl font-semibold mb-4">Add New Account</h2>
+
+        <label className="block text-sm font-medium text-gray-700">Account Name</label>
+        <select {...register("account_name")} className="w-full rounded border border-gray-300 p-2">
+          {accounts.map(name => (
+            <option key={name} value={name}>{name.charAt(0).toUpperCase() + name.slice(1)}</option>
+          ))}
+        </select>
+
+        <label className="block text-sm font-medium text-gray-700">Account Number</label>
+        <input
+          {...register("account_number")}
+          type="text"
+          readOnly
+          className="w-full rounded border border-gray-300 p-2"
+        />
+
+        <label className="block text-sm font-medium text-gray-700">Initial Amount</label>
+        <input
+          {...register("amount")}
+          type="number"
+          min={0}
+          step="0.01"
+          className="w-full rounded border border-gray-300 p-2"
+        />
+
+        <div className="flex justify-end gap-2">
+          <button type="button" onClick={handleClose} className="rounded bg-gray-300 px-4 py-2">Cancel</button>
+          <button type="submit" className="rounded bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700">Add Account</button>
         </div>
-
-        {data?.length === 0 ? (
-          <div className="w-full flex items-center justify-center py-10 text-gray-600">
-            <span>No Account Found</span>
-          </div>
-        ) : (
-          <div className="w-full grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 py-10 gap-6 px-6">
-            {data.map((acc, index) => (
-              <div
-                key={index}
-                className="w-full h-48 flex flex-col justify-between bg-gray-50 p-4 rounded shadow"
-              >
-                <div className="flex items-center gap-4">
-                  {ICONS[acc?.account_name?.toLowerCase()]}
-                  <div>
-                    <div className="flex items-center gap-1">
-                      <p className="text-black text-xl font-bold">
-                        {acc?.account_name}
-                      </p>
-                      <MdVerifiedUser className="text-emerald-600" />
-                    </div>
-                    <p className="text-sm text-gray-600">{acc?.account_number}</p>
-                    <p className="text-xs text-gray-500">
-                      {new Date(acc?.createdat).toLocaleDateString('en-US', {
-                        dateStyle: 'full',
-                      })}
-                    </p>
-                  </div>
-                  <div className="ml-auto">
-                    <AccountMenu
-                      addMoney={() => handleOpenAddMoney(acc)}
-                      transferMoney={() => handleTransferMoney(acc)}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between pt-4">
-                  <p className="text-xl text-gray-600 font-medium">
-                    {formatCurrency(acc?.account_balance)}
-                  </p>
-                  <button
-                    onClick={() => handleOpenAddMoney(acc)}
-                    className="text-sm text-violet-600 hover:underline"
-                  >
-                    Add Money
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <AddAccount
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        refetch={fetchAccounts}
-        key={new Date().getTime()}
-      />
-
-      {/* <AddMoney
-        isOpen={isOpenTopup}
-        setIsOpen={setIsOpenTopup}
-        id={selectedAccount}
-        refetch={fetchAccounts}
-        key={new Date().getTime() + 1}
-      />
-      <TransferMoney
-        isOpen={isOpenTransfer}
-        setIsOpen={setIsOpenTransfer}
-        id={selectedAccount}
-        refetch={fetchAccounts}
-        key={new Date().getTime() + 2}
-      /> */}
-    </>
+      </form>
+    </DialogWrapper>
   );
 };
 
-export default AccountPage;
+export default AddAccount;
