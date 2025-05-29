@@ -11,6 +11,7 @@ import { MdAdd, MdVerifiedUser } from 'react-icons/md';
 import toast from 'react-hot-toast';
 import AccountMenu from '../components/accountDialog';
 import AddAccount from '../components/addAccount';
+import AddMoney from '../components/addMoney';
 
 const ICONS = {
   crypto: (
@@ -154,6 +155,13 @@ const AccountPage = () => {
         setIsOpen={setIsOpen}
         refetch={fetchAccounts}
         existingAccounts={existingAccounts}
+      />
+
+      <AddMoney
+        isOpen={isOpenTopup}
+        setIsOpen={setIsOpenTopup}
+        refetch={fetchAccounts}  // Fetch accounts to update balance
+        selectedAccount={selectedAccount}
       />
 
       {/* TODO: AddMoney and TransferMoney modals when ready */}
