@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import AccountMenu from '../components/accountDialog';
 import AddAccount from '../components/addAccount';
 import AddMoney from '../components/addMoney';
+import TransferMoney from '../components/transferMoney';
 
 const ICONS = {
   crypto: (
@@ -45,7 +46,7 @@ const AccountPage = () => {
   const [isOpenTopup, setIsOpenTopup] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenTransfer, setIsOpenTransfer] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState('');
+  const [selectedAccount, setSelectedAccount] = useState(null); // hold full account object
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -69,22 +70,18 @@ const AccountPage = () => {
   };
 
   const handleOpenAddMoney = (acc) => {
-    setSelectedAccount(acc?.id);
+    setSelectedAccount(acc);  // pass full account object
     setIsOpenTopup(true);
   };
 
   const handleTransferMoney = (acc) => {
-    setSelectedAccount(acc?.id);
+    setSelectedAccount(acc);  // pass full account object
     setIsOpenTransfer(true);
   };
 
   useEffect(() => {
     fetchAccounts();
   }, []);
-
-  const existingAccounts = data.map(acc => ({
-    name: acc.account_name?.toLowerCase(),
-  }));
 
   if (isLoading) {
     return <Loading />;
@@ -154,17 +151,22 @@ const AccountPage = () => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         refetch={fetchAccounts}
-        existingAccounts={existingAccounts}
       />
 
       <AddMoney
         isOpen={isOpenTopup}
         setIsOpen={setIsOpenTopup}
-        refetch={fetchAccounts}  // Fetch accounts to update balance
-        selectedAccount={selectedAccount}
+        refetch={fetchAccounts}
+        selectedAccount={selectedAccount}  // pass full account object
       />
 
-      {/* TODO: AddMoney and TransferMoney modals when ready */}
+      <TransferMoney
+        isOpen={isOpenTransfer}
+        setIsOpen={setIsOpenTransfer}
+        refetch={fetchAccounts}
+        selectedAccount={selectedAccount}  // pass full account object
+        accounts={data}  // passing all accounts for transfer
+      />
     </>
   );
 };

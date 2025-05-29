@@ -23,7 +23,7 @@ const AddMoney = ({ isOpen, setIsOpen, refetch, selectedAccount }) => {
 
     try {
       // PUT request to backend to add money to the account
-      const response = await api.put(`/account/addmoney/${selectedAccount}`, {
+      const response = await api.put(`/account/addmoney/${selectedAccount.id}`, {
         amount: Number(data.amount),
       });
 
