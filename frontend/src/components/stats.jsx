@@ -13,21 +13,21 @@ const Stats = ({ dt }) => {
   const data = [
     {
       label: "Your Total Balance",
-      amount: dt?.balance,
+      amount: dt?.balance || 0,
       increase: 10.9,
       icon: <BsCashCoin size={26} />,
     },
     {
       label: "Total Income",
-      amount: dt?.income,
-      icon: <BsCashCoin size={26} />,
+      amount: dt?.income || 0,
       increase: 8.9,
+      icon: <BsCashCoin size={26} />,
     },
     {
       label: "Total Expense",
-      amount: dt?.expense,
-      icon: <SiCashapp size={26} />,
+      amount: dt?.expense || 0,
       increase: -10.9,
+      icon: <SiCashapp size={26} />,
     },
   ];
 
@@ -40,7 +40,9 @@ const Stats = ({ dt }) => {
         >
           <div className="flex items-center gap-2">
             <div
-              className={`w-12 h-12 flex items-center justify-center rounded-full ${ICON_STYLES[index]}`}
+              className={`w-12 h-12 flex items-center justify-center rounded-full ${
+                ICON_STYLES[index]
+              }`}
             >
               {item.icon}
             </div>
@@ -50,7 +52,7 @@ const Stats = ({ dt }) => {
                 {item.label}
               </span>
               <p className="text-2xl 2xl:text-3xl font-medium text-black dark:text-gray-400">
-                ₹{item.amount}
+                ₹{item.amount.toLocaleString()}
               </p>
             </div>
           </div>
