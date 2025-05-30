@@ -8,3 +8,9 @@
 .labelStyles{
     @apply block text-gray-700 text-sm md:text-base ;
 }
+
+/* Make Inter the default font for the whole app */
+body {
+  font-family: 'Inter', sans-serif;
+}
+

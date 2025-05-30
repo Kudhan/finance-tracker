@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import Title from "./title";
 
-const COLORS = ["#0088FE", "#FFBB28", "#FF8042"];
+const COLORS = ["#34D399", "#F87171", "#60A5FA"];
 
 const DoughnutChart = ({ data }) => {
   return (

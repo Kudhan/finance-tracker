@@ -162,7 +162,7 @@ export const addTransaction = async (req, res) => {
     await client.query({
       text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source, account_id) 
              VALUES($1, $2, $3, $4, $5, $6, $7)`,
-      values: [userId, description, "debit", "success", newAmount, source, account_id],
+      values: [userId, description, "expense", "success", newAmount, source, account_id],
     });
 
     await client.query("COMMIT");

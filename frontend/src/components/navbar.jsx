@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { RiCurrencyLine } from "react-icons/ri";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { MdOutlineKeyboardArrowDown, MdMenu, MdClose } from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu } from "@headlessui/react";
 import { signOut } from "firebase/auth";
 import { auth } from "../libs/firebaseConfig";
 import useStore from "../store";
 import TransitionWrapper from "./wrappers/transition-wrapper";
+import { MdInsights } from "react-icons/md";
+
 
 const links = [
   { label: "Dashboard", link: "/overview" },
@@ -46,18 +48,6 @@ const UserMenu = () => {
           <Menu.Item>
             {({ active }) => (
               <Link
-                to="/account"
-                className={`block px-4 py-2 text-sm ${
-                  active ? "bg-gray-100" : "text-gray-700"
-                }`}
-              >
-                Profile
-              </Link>
-            )}
-          </Menu.Item>
-          <Menu.Item>
-            {({ active }) => (
-              <Link
                 to="/settings"
                 className={`block px-4 py-2 text-sm ${
                   active ? "bg-gray-100" : "text-gray-700"
@@ -90,18 +80,20 @@ const Navbar = () => {
   const [selected, setSelected] = useState(
     links.findIndex((l) => l.link === location.pathname)
   );
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <nav className="w-full flex items-center justify-between py-6 px-4 md:px-8 bg-white shadow-sm">
+    <nav className="w-full flex items-center justify-between py-6 px-4 md:px-8 bg-white shadow-sm relative">
       {/* Brand */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 md:pl-10" onClick={()=>navigate("/overview")}>
         <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-violet-700 rounded-xl">
-          <RiCurrencyLine className="text-white text-2xl md:text-3xl hover:animate-spin" />
+          <MdInsights className="text-white text-2xl md:text-3xl " />
         </div>
-        <span className="text-xl font-bold text-black">My-Finance</span>
+        <span className="text-xl font-bold text-black">Finance Glance</span>
       </div>
 
-      {/* Navigation Links */}
+      {/* Desktop Navigation Links */}
       <div className="hidden md:flex items-center gap-4">
         {links.map((link, index) => (
           <Link
@@ -119,10 +111,52 @@ const Navbar = () => {
         ))}
       </div>
 
-      {/* User Profile Section */}
-      <div className="flex items-center gap-6 md:gap-10">
+      {/* Mobile Menu Icon */}
+      <div className="md:hidden">
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="text-2xl text-gray-800"
+        >
+          {isMobileMenuOpen ? <MdClose /> : <MdMenu />}
+        </button>
+      </div>
+
+      {/* User Section */}
+      <div className="hidden md:flex items-center gap-6 md:gap-10">
         <UserMenu />
       </div>
+
+      {/* Mobile Dropdown Menu */}
+      {isMobileMenuOpen && (
+        <div className="absolute top-full left-0 w-full bg-white shadow-md flex flex-col py-4 px-6 md:hidden z-40">
+          {links.map((link, index) => (
+            <Link
+              key={index}
+              to={link.link}
+              onClick={() => {
+                setSelected(index);
+                setIsMobileMenuOpen(false); // Close menu on link click
+              }}
+              className={`py-2 font-medium border-b border-gray-200 ${
+                index === selected ? "text-black font-semibold" : "text-gray-700"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <div className="pt-4">
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                handleSignOut();
+              }}
+              className="text-red-600 text-sm font-medium"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

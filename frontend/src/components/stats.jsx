@@ -32,7 +32,7 @@ const Stats = ({ dt }) => {
   ];
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between gap-8 2xl:gap-30 mb-20">
+    <div className="flex flex-col md:flex-row items-center justify-between gap-8 2xl:gap-30 mb-20 ">
       {data.map((item, index) => (
         <div
           key={index + item.label}

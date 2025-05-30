@@ -12,13 +12,24 @@ import { auth } from "../../libs/firebaseConfig";
 import useStore from "../../store";
 import api from "../../libs/apiCall";
 
+// Random password generator
+const generateRandomPassword = (length = 12) => {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+};
+
 const SocialAuth = ({ isLoading, setLoading }) => {
   const [firebaseUser] = useAuthState(auth);
   const [selectedProvider, setSelectedProvider] = useState("google");
   const navigate = useNavigate();
   const { setCredentials } = useStore((state) => state);
 
-  // ✅ New state to prevent duplicate API calls and toasts
+  // Prevent duplicate API calls/toasts
   const [alreadyHandled, setAlreadyHandled] = useState(false);
 
   const provider = new GoogleAuthProvider();
@@ -27,60 +38,65 @@ const SocialAuth = ({ isLoading, setLoading }) => {
     setSelectedProvider("google");
     try {
       setLoading(true);
-      await signInWithPopup(auth, provider); // Triggers Firebase auth
+      await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Error signing in with Google:", error);
       toast.error(error?.message || "Failed to sign in with Google");
-      setLoading(false); // ✅ Make sure loading ends on failure
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    const saveUserToDb = async () => {
-      if (!firebaseUser || alreadyHandled) return;
+  const saveUserToDb = async () => {
+    if (!firebaseUser || alreadyHandled) return;
 
-      // ✅ Prevent saving user again on multiple re-renders
-      setAlreadyHandled(true);
+    setAlreadyHandled(true);
 
-      try {
-        const userData = {
-          firstname: firebaseUser.displayName,
-          email: firebaseUser.email,
-          provider: selectedProvider,
-          uid: firebaseUser.uid,
-        };
+    try {
+      const userData = {
+        firstname: firebaseUser.displayName,
+        email: firebaseUser.email,
+        provider: selectedProvider,
+        uid: firebaseUser.uid,
+        password: Math.random().toString(36).slice(-10), // Random password (backend needs it)
+      };
 
-        const { data: res } = await api.post("/auth/signup", userData);
+      const { data: res } = await api.post("/auth/signup", userData);
 
-        // ✅ Only proceed if signup response is successful
-        if (res?.token) {
-          toast.success("Welcome back!");
-          const userInfo = { ...res.user, token: res.token };
-          localStorage.setItem("user", JSON.stringify(userInfo));
-          setCredentials(userInfo);
-          navigate("/overview"); // ✅ Redirect after successful signup
-        } else {
-          toast.error("Failed to save user data");
-        }
-      } catch (error) {
-        // ✅ Handle duplicate email gracefully with redirect
-        if (error?.response?.status === 409) {
-          toast.error("This account already exists. Logging you in...");
-          navigate("/overview");
-        } else {
-          console.error("Error saving user to DB:", error);
-          toast.error(error?.response?.data?.message || "Failed to save user data");
-        }
-      } finally {
+      if (res?.token) {
+        toast.success("Welcome back!");
+        const userInfo = { ...res.user, token: res.token };
+        localStorage.setItem("user", JSON.stringify(userInfo));
+        setCredentials(userInfo);
+        navigate("/overview");
+      } else {
+        toast.error("Failed to save user data");
+      }
+    } catch (error) {
+      console.error("Error saving user to DB:", error);
+
+      // ❗ If user doesn't exist in backend, sign them out + clear everything
+      if (error?.response?.status === 409 || error?.response?.status === 400) {
+        toast.error("User data invalid or already exists. Resetting...");
+
+        localStorage.removeItem("user");
+        setCredentials(null);
+
+        // Sign out from Firebase Auth
+        await auth.signOut();
+        setAlreadyHandled(false);
+        window.location.reload(); // force retry login
+      } else {
+        toast.error(error?.response?.data?.message || "Failed to save user");
         setLoading(false);
       }
-    };
-
-    // ✅ Trigger only if Firebase user is available
-    if (firebaseUser) {
-      saveUserToDb();
     }
-  }, [firebaseUser, selectedProvider, navigate, setCredentials, setLoading, alreadyHandled]);
+  };
+
+  if (firebaseUser) {
+    saveUserToDb();
+  }
+}, [firebaseUser, selectedProvider, navigate, setCredentials, setLoading, alreadyHandled]);
 
   return (
     <div className="flex items-center gap-2">

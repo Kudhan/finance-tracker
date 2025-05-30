@@ -23,8 +23,8 @@ const Chart = ({ data }) => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="income" stroke="#8884d8" name="Income" />
-          <Line type="monotone" dataKey="expense" stroke="#82ca9d" name="Expense" />
+          <Line type="monotone" dataKey="income" stroke="#34D399" name="Income" />
+          <Line type="monotone" dataKey="expense" stroke="#F87171" name="Expense" />
         </LineChart>
       </ResponsiveContainer>
     </div>
