@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../libs/apiCall';
 import toast from 'react-hot-toast';
-import Loading from '../components/Loading';
+import Loading from '../components/loading'
 import { IoSearchOutline } from 'react-icons/io5';
 import { MdAdd } from 'react-icons/md';
 import { FaSpinner } from 'react-icons/fa';
