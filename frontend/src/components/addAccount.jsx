@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import DialogWrapper from './wrappers/dialog-wrapper';
 import api from '../libs/apiCall';
 import toast from 'react-hot-toast';
 
-const accounts = ["cash", "crypto", "visa", "paypal"];
+const accounts = ["cash", "crypto", "visa", "stocks"];
 
 const AddAccount = ({ isOpen, setIsOpen, refetch, existingAccounts = [] }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const generateAccountNumber = () => {
     let account_number = "";
     while (account_number.length < 13) {
@@ -32,6 +34,8 @@ const AddAccount = ({ isOpen, setIsOpen, refetch, existingAccounts = [] }) => {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
       await api.post('/account/create', {
         name: data.account_name,
@@ -47,7 +51,9 @@ const AddAccount = ({ isOpen, setIsOpen, refetch, existingAccounts = [] }) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to add account. Please try again.");
+      toast.error(error?.response?.data?.message || "Failed to add account");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -86,8 +92,23 @@ const AddAccount = ({ isOpen, setIsOpen, refetch, existingAccounts = [] }) => {
         />
 
         <div className="flex justify-end gap-2">
-          <button type="button" onClick={handleClose} className="rounded bg-gray-300 px-4 py-2">Cancel</button>
-          <button type="submit" className="rounded bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700">Add Account</button>
+          <button
+            type="button"
+            onClick={handleClose}
+            className="rounded bg-gray-300 px-4 py-2"
+            disabled={isSubmitting}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`rounded px-4 py-2 text-white ${
+              isSubmitting ? "bg-indigo-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"
+            }`}
+          >
+            {isSubmitting ? "Adding..." : "Add Account"}
+          </button>
         </div>
       </form>
     </DialogWrapper>

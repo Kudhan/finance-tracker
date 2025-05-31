@@ -8,7 +8,10 @@ const sizeClasses = {
 };
 
 const Input = forwardRef(
-  ({ id, label, error, size = 'default', className, ...props }, ref) => (
+  (
+    { id, label, error, size = 'default', className, rightIcon: RightIcon, onRightIconClick, type = 'text', ...props },
+    ref
+  ) => (
     <div className="space-y-2">
       {label && (
         <label
@@ -18,18 +21,34 @@ const Input = forwardRef(
           {label}
         </label>
       )}
-      <input
-        id={id}
-        ref={ref}
-        className={clsx(
-          'block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-blue-400 focus:ring-opacity-50',
-          'placeholder-gray-400',
-          'disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed',
-          sizeClasses[size],
-          className
+
+      <div className="relative">
+        <input
+          id={id}
+          ref={ref}
+          type={type}
+          className={clsx(
+            'block w-full rounded-md border border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-blue-400 focus:ring-opacity-50',
+            'placeholder-gray-400',
+            'disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed',
+            sizeClasses[size],
+            className,
+            RightIcon && 'pr-10' // Add padding if there's an icon
+          )}
+          {...props}
+        />
+
+        {RightIcon && (
+          <div
+            onClick={onRightIconClick}
+            className="absolute inset-y-0 right-3 flex items-center text-gray-500 cursor-pointer"
+            title="Toggle password visibility"
+          >
+            <RightIcon className="text-xl" />
+          </div>
         )}
-        {...props}
-      />
+      </div>
+
       {error && (
         <p className="mt-2 text-sm text-red-600 dark:text-red-400">
           {error}

@@ -15,7 +15,7 @@ const Settings = () => {
       <div className='py-10'>
         <p className='text-lg font-bold text-black'>Profile information</p>
         <div className='flex items-center gap-4 my-8'>
-          <div className='flex items-center justify-center w-12 h-12 text-white rounded-full cursor-pointer bg-violet-600 font-bold text-2xl'>
+          <div className='flex items-center justify-center w-12 h-12 text-white rounded-full cursor-pointer bg-rose-500 font-bold text-2xl'>
             <p>{user?.firstname.charAt(0)}</p>
           </div>
           <p className='text-2xl font-semibold text-black '>{user?.firstname}</p>

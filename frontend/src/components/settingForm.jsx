@@ -229,7 +229,7 @@ const SettingForm = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-md bg-violet-600 py-3 text-white font-semibold hover:bg-violet-700 transition duration-200 disabled:opacity-50"
+          className="w-full rounded-md bg-pink-500 py-3 text-white font-semibold hover:bg-violet-700 transition duration-200 disabled:opacity-50"
         >
           {loading ? 'Saving...' : 'Save Settings'}
         </button>
@@ -310,7 +310,7 @@ const SettingForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-md bg-violet-600 py-3 text-white font-semibold hover:bg-violet-700 transition duration-200 disabled:opacity-50"
+            className="w-full rounded-md bg-pink-500 py-3 text-white font-semibold hover:bg-violet-700 transition duration-200 disabled:opacity-50"
           >
             {loading ? 'Changing...' : 'Change Password'}
           </button>

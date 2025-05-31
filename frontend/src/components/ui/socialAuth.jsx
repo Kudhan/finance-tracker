@@ -37,6 +37,7 @@ const SocialAuth = ({ isLoading, setLoading }) => {
   const signInWithGoogle = async () => {
     setSelectedProvider("google");
     try {
+      
       setLoading(true);
       await signInWithPopup(auth, provider);
     } catch (error) {

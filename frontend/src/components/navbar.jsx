@@ -37,7 +37,7 @@ const UserMenu = () => {
   return (
     <Menu as="div" className="relative z-50">
       <Menu.Button className="flex items-center gap-2">
-        <div className="flex items-center justify-center w-10 h-10 text-white rounded-full bg-violet-700 hover:bg-violet-800">
+        <div className="flex items-center justify-center w-10 h-10 text-white rounded-full bg-rose-500 hover:bg-violet-800">
           <p className="text-lg font-bold">{user?.firstname?.charAt(0) || "U"}</p>
         </div>
         <MdOutlineKeyboardArrowDown className="hidden md:block text-2xl text-gray-600 cursor-pointer" />
@@ -87,7 +87,7 @@ const Navbar = () => {
     <nav className="w-full flex items-center justify-between py-6 px-4 md:px-8 bg-white shadow-sm relative">
       {/* Brand */}
       <div className="flex items-center gap-2 md:pl-10" onClick={()=>navigate("/overview")}>
-        <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-violet-700 rounded-xl">
+        <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-rose-500 rounded-xl">
           <MdInsights className="text-white text-2xl md:text-3xl " />
         </div>
         <span className="text-xl font-bold text-black">Finance Glance</span>

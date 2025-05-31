@@ -7,6 +7,8 @@ import { IoSearchOutline } from 'react-icons/io5';
 import { MdAdd } from 'react-icons/md';
 import { FaSpinner } from 'react-icons/fa';
 import dayjs from 'dayjs';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const Transactions = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -83,6 +85,34 @@ const Transactions = () => {
     }
   };
 
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Transaction Report', 14, 15);
+
+    const tableColumn = ['Date', 'Description', 'Status', 'Source', 'Type', 'Amount'];
+    const tableRows = [];
+
+    data.forEach(tx => {
+      const txData = [
+        dayjs(tx.createdat).format('MMM D, YYYY h:mm A'),
+        tx.description,
+        tx.status,
+        tx.source,
+        tx.type,
+        `${tx.type === 'income' ? '+' : '-'}INR ${parseFloat(tx.amount).toFixed(2)}`
+      ];
+      tableRows.push(txData);
+    });
+
+    autoTable(doc, {
+      startY: 20,
+      head: [tableColumn],
+      body: tableRows,
+    });
+
+    doc.save('transactions.pdf');
+  };
+
   useEffect(() => {
     fetchTransactions();
     fetchAccounts();
@@ -119,11 +149,16 @@ const Transactions = () => {
           <button type='submit' className='bg-black text-white px-4 py-2 rounded'>Search</button>
         </form>
 
-        {/* Pay Button */}
-        <button onClick={() => setIsOpen(true)} className='py-2 px-4 rounded text-white bg-blue-600 flex items-center gap-2'>
-          <MdAdd size={20} />
-          <span>Pay</span>
-        </button>
+        {/* Buttons */}
+        <div className='flex gap-2 mt-5'>
+          <button onClick={() => setIsOpen(true)} className='py-2 px-4 rounded text-white bg-blue-600 flex items-center gap-2'>
+            <MdAdd size={20} />
+            <span>Pay</span>
+          </button>
+          <button onClick={handleExportPDF} className='py-2 px-4 rounded text-white bg-green-600 flex items-center gap-2'>
+            Export to PDF
+          </button>
+        </div>
       </div>
 
       {/* Transactions */}
