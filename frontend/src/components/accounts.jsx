@@ -18,6 +18,9 @@ const bgColorMap = {
   stocks: "bg-pink-700", // This will now apply
 };
 
+console.log("Icon Map:", iconMap);
+console.log("Background Color Map:", bgColorMap);
+
 const Accounts = ({ accounts = [] }) => {
   return (
     <div className="mt-10 py-10 w-full">
@@ -50,6 +53,7 @@ const Accounts = ({ accounts = [] }) => {
           );
         })}
       </div>
+
     </div>
   );
 };
