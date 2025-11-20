@@ -4,7 +4,7 @@ import axios from 'axios';
 const DEFAULT_LOCAL = 'https://finance-tracker-l3wq.onrender.com/api';
 
 // Vite exposes env vars prefixed with VITE_ via import.meta.env
-const API_BASE = (import.meta && import.meta.env && import.meta.env.VITE_API_URL) || DEFAULT_LOCAL;
+const API_BASE =  DEFAULT_LOCAL;
 
 const api = axios.create({
   baseURL: API_BASE,
