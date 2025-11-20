@@ -6,7 +6,7 @@ A modern, responsive, and secure **Finance Tracker App** built with **React + Vi
 ---
 
 ## 🚀 Live Demo (Render Deployments)
--**Frontend:** [https://finance-tracker-ashen-two.vercel.app/overview]
+-**Frontend:** [https://finance-tracker-ashen-two.vercel.app/]
 
 -**Backend:** [https://finance-tracker-l3wq.onrender.com ]
 
