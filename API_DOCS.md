@@ -263,5 +263,7 @@ If you have questions regarding the API structure or implementation:
 Shaik Kudhan
 GitHub: https://github.com/Kudhan
 
-Shaik Kudhan
-GitHub: https://github.com/Kudhan
+---
+
+PostMan-https://www.postman.com/sample-8789/workspace/resume-builder/collection/37612333-1ddcac83-bc41-4977-96bf-6337795dbf53?action=share&source=copy-link&creator=37612333
+
