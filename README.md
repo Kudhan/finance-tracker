@@ -1,81 +1,138 @@
-# 💰 Finance Glance – Personal Expense Tracker
+# 💰 Finance Glance — Full Stack Web Application  
+A modern, responsive, and secure **Finance Tracker App** built with **React + Vite**, **Node.js + Express**, and **PostgreSQL**, featuring JWT authentication, real-time dashboard analytics, and full CRUD operations for accounts and transactions.
 
-🚀 [Live Demo](https://finance-tracker-ashen-two.vercel.app/)  
-📂 [GitHub Repository](https://github.com/Kudhan/finance-tracker)
 
----
-
-## 📌 Overview
-
-**Finance Glance** is a full-stack web application that allows users to efficiently track and manage their personal finances. From viewing real-time transaction summaries to managing multiple account types (Cash, Cards, Crypto, Stocks), users get full control over their income and expenses with visual insights and intuitive design.
-
-This project was fully developed by me as part of my internship journey, using modern web technologies to ensure a responsive, secure, and seamless user experience.
 
 ---
 
-## 🧠 Key Features
+## 🚀 Live Demo (Render Deployments)
+**Frontend:** [https://your-frontend-url.onrender.com  ](https://finance-tracker-ashen-two.vercel.app/overview)
+**Backend:** [https://your-backend-url.onrender.com ](https://finance-tracker-l3wq.onrender.com) 
 
-- 📊 Interactive dashboard with pie charts and transaction graphs
-- 🔐 Secure user authentication with Firebase and JWT
-- 🧾 Add, edit, and filter transactions by date and category
-- 💼 Manage multiple account types (Cash, Cards, Crypto, Stocks)
-- 💸 Transfer funds between internal accounts
-- ⚙️ User settings for profile and password updates
-- 📱 Fully responsive UI for desktop and mobile
+
 
 ---
 
-## 🛠️ Tech Stack
+# 📌 Features
+
+### 🔐 Authentication
+- User Registration & Login (JWT)
+- Secure protected routes
+- Logout and token reset
+- Local storage token management
+
+### 👤 User Profile
+- View profile data
+- Update personal information
+- Change password (current → new)
+- Country & currency selection
+
+### 💳 Accounts (CRUD)
+- Create new accounts
+- Add money
+- Transfer money between accounts
+- View all user accounts
+- Delete account (if implemented)
+
+### 💰 Transactions
+- Auto-log deposits/transactions
+- Track transaction history
+- Dashboard analytics
+- Income vs Expense chart
+- Recent transactions list
+
+### 📊 Dashboard
+- Total balance
+- Total income
+- Total expense
+- Line chart (Recharts)
+- Donut chart (Distribution)
+- Last accounts used
+
+### 🎨 UI & Design
+- Fully responsive UI  
+- TailwindCSS  
+- Modern gradients, card UI, Bento UI  
+- Smooth animations  
+- Mobile-first layout
+
+---
+
+# 🧩 Tech Stack
 
 ### Frontend
-- React.js
-- Tailwind CSS
-- Firebase Authentication
-- React Icons
+- React.js (Vite)
+- Zustand (global state)
+- TailwindCSS
+- React Hook Form
+- Axios
+- Recharts
+- HeadlessUI (Combobox)
+- React Hot Toast
 
 ### Backend
-- Node.js
-- Express.js
-- JWT Authentication
-
-### Database
-- PostgreSQL
-
-### Deployment
-- Vercel (Frontend)
-- Render (Backend)
+- Node.js + Express.js
+- PostgreSQL  
+- JWT Authentication  
+- Bcrypt password hashing  
+- CORS  
+- pg (node-postgres driver)
 
 ---
 
-## 🔧 Setup Instructions
+# 🗂️ Folder Structure
 
-### 1. Clone the Repository
+finance-tracker/
+│
+├── backend/
+│ ├── controllers/
+│ ├── middleware/
+│ ├── routes/
+│ ├── libs/
+│ ├── index.js
+│ └── package.json
+│
+├── frontend/
+│ ├── src/
+│ │ ├── components/
+│ │ ├── pages/
+│ │ ├── libs/
+│ │ ├── store.js
+│ │ └── App.jsx
+│ └── package.json
+│
+├── README.md
+└── API_DOCS.md
 
-git clone https://github.com/Kudhan/finance-tracker.git
-cd finance-tracker ``
+---
 
-
-2. Install Dependencies
-bash
-Copy
-Edit
+🛠 Backend Setup
+cd backend
 npm install
-3. Configure Environment Variables
-Create a .env file in the root directory and add the following (replace with your actual keys):
 
-env
-Copy
-Edit
-DATABASE_URL=your_postgresql_connection_string
-JWT_SECRET=your_jwt_secret
-FIREBASE_API_KEY=your_firebase_api_key
-FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-FIREBASE_PROJECT_ID=your_project_id
-FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-FIREBASE_APP_ID=your_firebase_app_id
-4. Run the Development Server
-bash
-Copy
-Edit
+Create .env file:
+DATABASE_URL=your_postgres_url
+JWT_SECRET=your_secret
+NODE_ENV=development
+PORT=5000
+
+Start backend
+npm run dev     # nodemon (dev)
+npm start       # production
+
+---
+
+🎨 Frontend Setup
+cd frontend
+npm install
+
+
+Create .env:
+
+VITE_API_URL=http://localhost:5000/api
+
+
+Start development server:
+
 npm run dev
+
