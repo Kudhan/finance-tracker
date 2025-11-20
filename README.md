@@ -84,25 +84,25 @@ A modern, responsive, and secure **Finance Tracker App** built with **React + Vi
 
 finance-tracker/
 │
-├── backend/
-│ ├── controllers/
-│ ├── middleware/
-│ ├── routes/
-│ ├── libs/
-│ ├── index.js
-│ └── package.json
-│
-├── frontend/
-│ ├── src/
-│ │ ├── components/
-│ │ ├── pages/
-│ │ ├── libs/
-│ │ ├── store.js
-│ │ └── App.jsx
-│ └── package.json
-│
-├── README.md
-└── API_DOCS.md
+-├── backend/
+-│ ├── controllers/
+-│ ├── middleware/
+-│ ├── routes/
+-│ ├── libs/
+-│ ├── index.js
+-│ └── package.json
+-│
+-├── frontend/
+-│ ├── src/
+-│ │ ├── components/
+-│ │ ├── pages/
+-│ │ ├── libs/
+-│ │ ├── store.js
+-│ │ └── App.jsx
+-│ └── package.json
+-│
+-├── README.md
+-└── API_DOCS.md
 
 ---
 
