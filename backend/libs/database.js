@@ -6,17 +6,20 @@ dotenv.config();
 
 const { Pool } = pg;
 
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Required for Render Postgres SSL
-  },
+// Use DATABASE_URL on Render — fall back to local DB if needed
+const connectionString = process.env.DATABASE_URL || process.env.LOCAL_DATABASE_URL;
+
+const pool = new Pool({
+  connectionString,
+  ssl: process.env.NODE_ENV === 'production'
+    ? { rejectUnauthorized: false } // Render requires SSL
+    : false, // Local machines must NOT use SSL
 });
 
-// Optional: Test connection on startup
+// Optional: Test connection
 pool.connect()
   .then(client => {
-    console.log('✅ Connected to Render Postgres');
+    console.log('✅ Connected to Postgres');
     client.release();
   })
   .catch(err => {

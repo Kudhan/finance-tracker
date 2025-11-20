@@ -84,7 +84,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="w-full flex items-center justify-between py-6 px-4 md:px-8 bg-white shadow-sm relative">
+    <nav className="w-full flex items-center justify-between py-6 px-4 md:px-8  shadow-sm relative">
       {/* Brand */}
       <div className="flex items-center gap-2 md:pl-10" onClick={()=>navigate("/overview")}>
         <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-rose-500 rounded-xl">

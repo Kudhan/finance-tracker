@@ -3,8 +3,17 @@ import useStore from '../store';
 import { useForm } from 'react-hook-form';
 import { Combobox, Transition } from '@headlessui/react';
 import { BsChevronExpand } from 'react-icons/bs';
-import api from '../libs/apiCall';
+import api, { setAuthToken } from '../libs/apiCall';
 import toast from 'react-hot-toast';
+
+const MANUAL_COUNTRIES = [
+  { country: 'United States', currency: 'US' },
+  { country: 'India', currency: 'IN' },
+  { country: 'United Kingdom', currency: 'GB' },
+  { country: 'Canada', currency: 'CA' },
+  { country: 'Australia', currency: 'AU' },
+  { country: 'Germany', currency: 'EU' },
+];
 
 const SettingForm = () => {
   const { user, setCredentials } = useStore((state) => state);
@@ -17,6 +26,7 @@ const SettingForm = () => {
   } = useForm({
     defaultValues: {
       firstname: user?.firstname || '',
+      lastname: user?.lastname || '',
       email: user?.email || '',
     },
   });
@@ -29,41 +39,38 @@ const SettingForm = () => {
   const [countriesData, setCountriesData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Password form state
+  // Password form state (include getValues for validation)
   const {
     register: registerPwd,
     handleSubmit: handleSubmitPwd,
     formState: { errors: pwdErrors },
     reset: resetPwd,
+    getValues,
   } = useForm();
 
-  // Fetch countries
+  // Restore token on mount so api instance has Authorization header
   useEffect(() => {
-    const fetchCountries = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch('https://restcountries.com/v3.1/all');
-        const json = await res.json();
-        const data = json.map((c) => ({
-          country: c.name.common,
-          currency: c.currencies ? Object.keys(c.currencies)[0] : 'N/A',
-        }));
-        setCountriesData(data.sort((a, b) => a.country.localeCompare(b.country)));
-      } catch (err) {
-        toast.error('Failed to load countries');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCountries();
+    const token = localStorage.getItem('token');
+    if (token) setAuthToken(token);
   }, []);
+
+  // Use manual country list (no external fetch)
+  useEffect(() => {
+    const sorted = MANUAL_COUNTRIES.slice().sort((a, b) => a.country.localeCompare(b.country));
+    setCountriesData(sorted);
+
+    if (user?.country && !sorted.find((c) => c.country === user.country)) {
+      setSelectedCountry({
+        country: user.country,
+        currency: user.currency || '',
+      });
+    }
+  }, [user]);
 
   const filteredCountries =
     query === ''
       ? countriesData
-      : countriesData.filter((c) =>
-          c.country.toLowerCase().includes(query.toLowerCase())
-        );
+      : countriesData.filter((c) => c.country.toLowerCase().includes(query.toLowerCase()));
 
   // Profile update submit
   const onSubmit = async (values) => {
@@ -76,14 +83,19 @@ const SettingForm = () => {
         country: selectedCountry.country,
         currency: selectedCountry.currency,
       };
-      const { data: res } = await api.put(`/user/${user.id}`, updateData);
+
+      // <-- FIX: use route without duplicating /api if your api instance already uses baseURL '/api'
+      const { data: res } = await api.put('/user', updateData);
 
       if (res.status === 'success') {
         toast.success(res.message || 'Profile updated successfully');
         setCredentials({ ...user, ...updateData });
         reset(updateData);
+      } else {
+        toast.error(res.message || 'Update failed');
       }
     } catch (error) {
+      console.error('Profile update error:', error?.response?.data || error);
       toast.error(error?.response?.data?.message || 'Update failed');
     } finally {
       setLoading(false);
@@ -93,13 +105,25 @@ const SettingForm = () => {
   // Change password submit
   const onChangePassword = async (values) => {
     try {
+      // Client-side check: ensure new & confirm match before calling backend
+      if (values.newPassword !== values.confirmPassword) {
+        toast.error('New password and confirm password do not match');
+        return;
+      }
+
       setLoading(true);
-      const { data: res } = await api.post(`/user/change-password`, values);
+
+      // <-- FIX: trimmed route so it doesn't become /api/api/...
+      const { data: res } = await api.post('/user/change-password', values);
+
       if (res.status === 'success') {
-        toast.success(res.message);
+        toast.success(res.message || 'Password changed successfully');
         resetPwd();
+      } else {
+        toast.error(res.message || 'Password change failed');
       }
     } catch (error) {
+      console.error('Password change error:', error?.response?.data || error);
       toast.error(error?.response?.data?.message || 'Password change failed');
     } finally {
       setLoading(false);
@@ -208,9 +232,7 @@ const SettingForm = () => {
                           {({ selected, active }) => (
                             <>
                               <span
-                                className={`block truncate ${
-                                  selected ? 'font-semibold' : 'font-normal'
-                                }`}
+                                className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}
                               >
                                 {country.country} ({country.currency})
                               </span>
@@ -294,6 +316,7 @@ const SettingForm = () => {
               id="confirmPassword"
               {...registerPwd('confirmPassword', {
                 required: 'Confirm password is required',
+                validate: (val) => val === getValues('newPassword') || 'Passwords do not match',
               })}
               className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${
                 pwdErrors.confirmPassword ? 'border-red-500' : 'border-gray-300'

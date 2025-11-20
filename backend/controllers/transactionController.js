@@ -8,19 +8,19 @@ export const getTransactions = async (req, res) => {
     const _sevenDaysAgo = new Date(today);
     _sevenDaysAgo.setDate(today.getDate() - 7);
 
-    const sevenDaysAgo = _sevenDaysAgo.toISOString().split("T")[0];
+    const sevenDaysAgo = _sevenDaysAgo.toISOString();
     const { df, dt, s } = req.query;
-    const { userId } = req.user;  // fixed casing
+    const { userId } = req.user;
 
-    const startDate = new Date(df || sevenDaysAgo);
-    const endDate = new Date(dt || today);
+    const startDate = new Date(df || sevenDaysAgo).toISOString();
+    const endDate = new Date(dt || today).toISOString();
     const search = s || "";
 
     const transactions = await pool.query({
       text: `SELECT * FROM tbltransaction 
              WHERE user_id = $1 
-             AND createdAt BETWEEN $2 AND $3 
-             AND (description ILIKE '%' || $4 || '%' OR status ILIKE '%' || $4 || '%' OR source ILIKE '%' || $4 || '%') 
+               AND createdat BETWEEN $2 AND $3 
+               AND (description ILIKE '%' || $4 || '%' OR status ILIKE '%' || $4 || '%' OR source ILIKE '%' || $4 || '%') 
              ORDER BY id DESC`,
       values: [userId, startDate, endDate, search],
     });
@@ -43,9 +43,9 @@ export const getDashboardInformation = async (req, res) => {
     let totalIncome = 0;
     let totalExpense = 0;
 
-    // Fetch total income & expense
+    // Fetch total income & expense (only transactions linked to accounts)
     const transactionsResult = await pool.query({
-      text: `SELECT type, SUM(amount) as totalamount 
+      text: `SELECT type, COALESCE(SUM(amount),0) as totalamount 
              FROM tbltransaction 
              WHERE user_id = $1 AND account_id IS NOT NULL 
              GROUP BY type`,
@@ -63,13 +63,13 @@ export const getDashboardInformation = async (req, res) => {
 
     const availableBalance = totalIncome - totalExpense;
 
-    // Chart data by month
+    // Chart data by month (current year)
     const year = new Date().getFullYear();
-    const start_Date = new Date(year, 0, 1);
-    const end_Date = new Date(year, 11, 31, 23, 59, 59);
+    const start_Date = new Date(year, 0, 1).toISOString();
+    const end_Date = new Date(year, 11, 31, 23, 59, 59).toISOString();
 
     const result = await pool.query({
-      text: `SELECT EXTRACT(MONTH FROM createdat) AS month, type, SUM(amount) AS totalamount 
+      text: `SELECT EXTRACT(MONTH FROM createdat) AS month, type, COALESCE(SUM(amount),0) AS totalamount 
              FROM tbltransaction 
              WHERE user_id = $1 AND createdat BETWEEN $2 AND $3 AND account_id IS NOT NULL
              GROUP BY EXTRACT(MONTH FROM createdat), type`,
@@ -92,17 +92,31 @@ export const getDashboardInformation = async (req, res) => {
       };
     });
 
-    // Last 5 transactions
+    // Last 5 transactions (recent)
     const lastTransactionResult = await pool.query({
       text: `SELECT * FROM tbltransaction WHERE user_id = $1 ORDER BY id DESC LIMIT 5`,
       values: [userId],
     });
 
-    // Last 4 accounts
+    // Last 4 accounts (recent)
     const lastAccountResult = await pool.query({
       text: `SELECT * FROM tblaccount WHERE user_id = $1 ORDER BY id DESC LIMIT 4`,
       values: [userId],
     });
+
+    // Per-account totals for the user
+    const dashboardSql = `
+      SELECT a.id AS account_id,
+             a.account_name,
+             COALESCE(SUM(t.amount),0) AS total_amount,
+             COUNT(t.id) AS tx_count
+      FROM tblaccount a
+      LEFT JOIN tbltransaction t ON t.account_id = a.id
+      WHERE a.user_id = $1
+      GROUP BY a.id, a.account_name
+      ORDER BY a.id;
+    `;
+    const { rows: accountTotals } = await pool.query(dashboardSql, [userId]);
 
     res.status(200).json({
       status: "success",
@@ -112,6 +126,7 @@ export const getDashboardInformation = async (req, res) => {
       ChartData: data,
       lastTransactions: lastTransactionResult.rows,
       lastAccounts: lastAccountResult.rows,
+      accountTotals,
       message: "Dashboard information fetched successfully",
     });
   } catch (error) {
@@ -120,13 +135,13 @@ export const getDashboardInformation = async (req, res) => {
   }
 };
 
-
 // Add a debit transaction with proper transaction handling
 export const addTransaction = async (req, res) => {
   const client = await pool.connect();
   try {
-    const { userId } = req.user;  // fixed casing
-    const { account_id } = req.params;
+    const { userId } = req.user;
+    // accept account_id from params or body for flexibility
+    const account_id = req.params.account_id || req.body.account_id || req.body.accountId;
     const { description, source, amount } = req.body;
 
     if (!description || !source || !amount || !account_id) {
@@ -155,13 +170,13 @@ export const addTransaction = async (req, res) => {
     await client.query("BEGIN");
 
     await client.query({
-      text: `UPDATE tblaccount SET account_balance = account_balance - $1, updatedAt = CURRENT_TIMESTAMP WHERE id = $2`,
+      text: `UPDATE tblaccount SET account_balance = account_balance - $1, updatedat = CURRENT_TIMESTAMP WHERE id = $2`,
       values: [newAmount, account_id],
     });
 
     await client.query({
-      text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source, account_id) 
-             VALUES($1, $2, $3, $4, $5, $6, $7)`,
+      text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source, account_id, createdat, updatedat) 
+             VALUES($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
       values: [userId, description, "expense", "success", newAmount, source, account_id],
     });
 
@@ -184,7 +199,7 @@ export const addTransaction = async (req, res) => {
 export const transferMoneyToAccount = async (req, res) => {
   const client = await pool.connect();
   try {
-    const { userId } = req.user;  // fixed casing
+    const { userId } = req.user;
     const { from_account, to_account, amount } = req.body;
 
     if (!from_account || !to_account || !amount) {
@@ -225,13 +240,13 @@ export const transferMoneyToAccount = async (req, res) => {
 
     // Deduct from source account
     await client.query({
-      text: `UPDATE tblaccount SET account_balance = account_balance - $1, updatedAt = CURRENT_TIMESTAMP WHERE id = $2`,
+      text: `UPDATE tblaccount SET account_balance = account_balance - $1, updatedat = CURRENT_TIMESTAMP WHERE id = $2`,
       values: [newAmount, from_account],
     });
 
     // Add to destination account
     await client.query({
-      text: `UPDATE tblaccount SET account_balance = account_balance + $1, updatedAt = CURRENT_TIMESTAMP WHERE id = $2`,
+      text: `UPDATE tblaccount SET account_balance = account_balance + $1, updatedat = CURRENT_TIMESTAMP WHERE id = $2`,
       values: [newAmount, to_account],
     });
 
@@ -240,8 +255,8 @@ export const transferMoneyToAccount = async (req, res) => {
 
     // Insert transaction for debit side
     await client.query({
-      text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source, account_id)
-             VALUES ($1, $2, 'transfer', 'success', $3, $4, $5)`,
+      text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source, account_id, createdat, updatedat)
+             VALUES ($1, $2, 'transfer', 'success', $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
       values: [
         userId,
         description,
@@ -253,8 +268,8 @@ export const transferMoneyToAccount = async (req, res) => {
 
     // Insert transaction for credit side
     await client.query({
-      text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source, account_id)
-             VALUES ($1, $2, 'transfer', 'success', $3, $4, $5)`,
+      text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source, account_id, createdat, updatedat)
+             VALUES ($1, $2, 'transfer', 'success', $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
       values: [
         userId,
         description1,

@@ -10,14 +10,11 @@ export const getAccount = async (req, res) => {
       values: [userId],
     });
 
-    if (accounts.rowCount === 0) {
-      return res.status(404).json({ status: "failed", message: "Account not found" });
-    }
-
+    // Return 200 with empty array if no accounts found (treat as valid empty state)
     res.status(200).json({
       status: "success",
-      message: "Account fetched successfully",
-      accounts: accounts.rows,
+      message: "Accounts fetched successfully",
+      accounts: accounts.rows || [],
     });
   } catch (err) {
     console.error("Error fetching account:", err);
@@ -55,19 +52,21 @@ export const createAccount = async (req, res) => {
     const account = createAccountResult.rows[0];
 
     await client.query({
-      text: "UPDATE tbluser SET accounts = array_cat(accounts, $1), updatedAt = CURRENT_TIMESTAMP WHERE id = $2",
+      text: "UPDATE tbluser SET accounts = array_cat(coalesce(accounts, '{}'), $1), updatedat = CURRENT_TIMESTAMP WHERE id = $2",
       values: [[name], userId],
     });
 
     const description = `${account.account_name} (Initial Deposit)`;
 
     await client.query({
-      text: "INSERT INTO tbltransaction (user_id, description, type, status, amount, source, account_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      text: `INSERT INTO tbltransaction 
+             (user_id, description, type, status, amount, source, account_id, createdat, updatedat) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
       values: [
         userId,
         description,
         "income",
-        "success", // fixed from "completed"
+        "success",
         amount,
         account.account_number,
         account.id,
@@ -121,7 +120,7 @@ export const addMoneyToAccount = async (req, res) => {
     // 2. Update account balance
     const updatedAccountResult = await client.query({
       text: `UPDATE tblaccount 
-             SET account_balance = account_balance + $1, updatedAt = CURRENT_TIMESTAMP 
+             SET account_balance = account_balance + $1, updatedat = CURRENT_TIMESTAMP 
              WHERE id = $2 
              RETURNING *`,
       values: [newAmount, id],
@@ -132,8 +131,8 @@ export const addMoneyToAccount = async (req, res) => {
 
     await client.query({
       text: `INSERT INTO tbltransaction 
-             (user_id, description, type, status, amount, source, account_id) 
-             VALUES ($1, $2, 'income', 'completed', $3, $4, $5)`,
+             (user_id, description, type, status, amount, source, account_id, createdat, updatedat) 
+             VALUES ($1, $2, 'income', 'success', $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
       values: [userId, description, newAmount, account.account_number, account.id],
     });
 

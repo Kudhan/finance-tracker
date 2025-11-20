@@ -4,9 +4,13 @@ import { getUser, changePassword, updateUser } from "../controllers/userControll
 
 const router = express.Router();
 
-router.get("/",authMiddleware,getUser);
-router.put("/change-password",authMiddleware,changePassword);
-router.put("/",authMiddleware,updateUser);
+// GET  /api/user         -> getUser
+router.get("/", authMiddleware, getUser);
 
+// POST /api/user/change-password  -> changePassword (matches frontend's POST)
+router.post("/change-password", authMiddleware, changePassword);
+
+// PUT  /api/user         -> updateUser
+router.put("/", authMiddleware, updateUser);
 
 export default router;
