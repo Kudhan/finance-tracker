@@ -77,10 +77,7 @@ const Signin = () => {
           </p>
           <div className="mt-8 flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-indigo-400 border-2 border-indigo-300"></div>
-            <div>
-              <p className="font-semibold">Alex Morgan</p>
-              <p className="text-sm text-indigo-200">Product Designer</p>
-            </div>
+            <p> #Finance Glance</p>
           </div>
         </div>
       </div>
