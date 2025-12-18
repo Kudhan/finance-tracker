@@ -23,13 +23,13 @@ console.log("Background Color Map:", bgColorMap);
 
 const Accounts = ({ accounts = [] }) => {
   return (
-    <div className="mt-10 py-10 w-full">
+    <div className="w-full">
       <Title title="Accounts" />
       <span className="text-sm text-gray-600 ">View all your accounts</span>
 
       <div className="w-full">
         {accounts.map((item, index) => {
-          const key = item.name?.toLowerCase(); // Normalize
+          const key = item.account_name?.toLowerCase(); // Normalize
           const icon = iconMap[key] || <RiAccountBoxLine size={26} />;
           const bgColor = bgColorMap[key] || "bg-gray-600";
 
@@ -40,14 +40,14 @@ const Accounts = ({ accounts = [] }) => {
                   {icon}
                 </div>
                 <div>
-                  <p className="text-black dark:text-white text-lg font-semibold">{item.name}</p>
-                  <span className="text-gray-600 ">{item.account}</span>
+                  <p className="text-black text-lg font-semibold">{item.account_name}</p>
+                  <span className="text-gray-600 ">{item.account_number}</span>
                 </div>
               </div>
 
-              <div>
-                <p className="text-xl text-black dark:text-white font-bold">${item.amount}</p>
-                <span className="text-sm text-gray-600 dark:text-gray-400">Account Balance</span>
+              <div className="text-right">
+                <p className="text-xl text-black font-bold">₹{Number(item.account_balance).toLocaleString()}</p>
+                <span className="text-sm text-gray-600">Account Balance</span>
               </div>
             </div>
           );

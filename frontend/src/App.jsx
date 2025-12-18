@@ -9,6 +9,7 @@ import useStore from './store';
 import { setAuthToken } from './libs/apiCall';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/navbar';
+import LandingPage from './pages/landing';
 
 const RootLayout = () => {
   const { user } = useStore((state) => state);
@@ -40,7 +41,6 @@ function App() {
       {/* No padding here – prevents gaps */}
       <Routes>
         <Route element={<RootLayout />}>
-          <Route path="/" element={<Navigate to="/overview" />} />
           <Route path="/overview" element={<Dashboard />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/accounts" element={<AccountPage />} />
@@ -48,6 +48,7 @@ function App() {
         </Route>
 
         {/* Public routes */}
+        <Route path="/" element={<LandingPage />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>

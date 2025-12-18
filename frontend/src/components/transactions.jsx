@@ -5,7 +5,7 @@ import { TiWarning } from "react-icons/ti";
 
 const RecentTransactions = ({ data = [] }) => {
   return (
-    <div className="w-full md:w-2/3">
+    <div className="w-full">
       <h2 className="text-2xl font-semibold mb-4 text-gray-900">
         Latest Transactions
       </h2>
@@ -43,7 +43,7 @@ const RecentTransactions = ({ data = [] }) => {
                 </td>
 
                 <td className="py-3 px-6 text-right font-semibold text-gray-900">
-                  ${item.amount}.00
+                  ₹{item.amount}.00
                 </td>
               </tr>
             ))}

@@ -13,7 +13,7 @@ import Title from "./title";
 
 const Chart = ({ data }) => {
   return (
-    <div className="w-full md:w-2/3">
+    <div className="w-full h-full">
       <Title title="Transaction Activity" />
 
       <ResponsiveContainer width="100%" height={500} className="mt-5">

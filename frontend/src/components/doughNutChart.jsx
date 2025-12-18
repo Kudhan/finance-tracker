@@ -13,7 +13,7 @@ const COLORS = ["#34D399", "#F87171", "#60A5FA"];
 
 const DoughnutChart = ({ data }) => {
   return (
-    <div className="w-full md:w-1/3 flex flex-col items-center bg-gray-50 dark:bg-transparent">
+    <div className="w-full flex flex-col items-center">
       <Title title="Summary" />
 
       <ResponsiveContainer width="100%" height={500}>
@@ -22,8 +22,8 @@ const DoughnutChart = ({ data }) => {
           <Legend verticalAlign="bottom" height={36} />
           <Pie
             data={data}
-            innerRadius={110}
-            outerRadius={180}
+            innerRadius={80}
+            outerRadius={120}
             fill="#8884d8"
             paddingAngle={5}
             dataKey="value"

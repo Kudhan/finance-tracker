@@ -108,7 +108,7 @@ const AccountPage = () => {
         ) : (
           <div className="w-full grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 py-10 gap-6 px-6">
             {data.map((acc, index) => (
-              <div key={index} className="w-full h-48 flex gap-4 bg-gray-50 p-3 rounded shadow">
+              <div key={index} className="w-full h-48 flex gap-4 bg-white border border-slate-200 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
                 <div>
                   {ICONS[acc?.account_name?.toLowerCase()] || (
                     <div className="w-12 h-12 bg-gray-500 text-white flex items-center justify-center rounded-full">
@@ -122,7 +122,7 @@ const AccountPage = () => {
                       <p className="text-black text-2xl font-bold">{acc?.account_name}</p>
                       <MdVerifiedUser size={26} className="text-emerald-600 ml-1" />
                     </div>
-                    <AccountMenu 
+                    <AccountMenu
                       addMoney={() => handleOpenAddMoney(acc)}
                       transferMoney={() => handleTransferMoney(acc)} />
                   </div>

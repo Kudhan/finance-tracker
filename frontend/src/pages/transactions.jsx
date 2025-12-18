@@ -121,7 +121,7 @@ const Transactions = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <div className='w-full py-10 px-4 md:px-10 relative'>
+    <div className='w-full'>
       {/* Filters */}
       <div className='flex flex-col md:flex-row md:items-center gap-4 mb-6'>
         <form onSubmit={handleSearch} className='flex flex-wrap items-end gap-4'>

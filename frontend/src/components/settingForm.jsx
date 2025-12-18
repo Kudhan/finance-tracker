@@ -144,9 +144,8 @@ const SettingForm = () => {
             <input
               id="firstname"
               {...register('firstname', { required: 'First name is required' })}
-              className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${
-                errors.firstname ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${errors.firstname ? 'border-red-500' : 'border-gray-300'
+                }`}
               placeholder="Your first name"
               disabled={loading}
             />
@@ -176,9 +175,8 @@ const SettingForm = () => {
               id="email"
               type="email"
               {...register('email', { required: 'Email is required' })}
-              className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'
+                }`}
               placeholder="you@example.com"
               disabled={loading}
             />
@@ -190,9 +188,8 @@ const SettingForm = () => {
             <Combobox value={selectedCountry} onChange={setSelectedCountry} nullable>
               <div className="relative">
                 <div
-                  className={`relative w-full cursor-default overflow-hidden rounded-md border shadow-sm ${
-                    loading ? 'border-gray-300 bg-gray-100' : 'border-gray-300 bg-white'
-                  }`}
+                  className={`relative w-full cursor-default overflow-hidden rounded-md border shadow-sm ${loading ? 'border-gray-300 bg-gray-100' : 'border-gray-300 bg-white'
+                    }`}
                 >
                   <Combobox.Input
                     className="w-full border-none py-2 pl-3 pr-10 text-gray-900 focus:ring-0 focus:outline-none"
@@ -223,8 +220,7 @@ const SettingForm = () => {
                         <Combobox.Option
                           key={idx}
                           className={({ active }) =>
-                            `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                              active ? 'bg-violet-600 text-white' : 'text-gray-900'
+                            `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? 'bg-violet-600 text-white' : 'text-gray-900'
                             }`
                           }
                           value={country}
@@ -251,7 +247,7 @@ const SettingForm = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-md bg-pink-500 py-3 text-white font-semibold hover:bg-violet-700 transition duration-200 disabled:opacity-50"
+          className="w-full rounded-md bg-indigo-600 py-3 text-white font-semibold hover:bg-indigo-700 transition duration-200 disabled:opacity-50"
         >
           {loading ? 'Saving...' : 'Save Settings'}
         </button>
@@ -272,9 +268,8 @@ const SettingForm = () => {
               type="password"
               id="currentPassword"
               {...registerPwd('currentPassword', { required: 'Current password is required' })}
-              className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${
-                pwdErrors.currentPassword ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${pwdErrors.currentPassword ? 'border-red-500' : 'border-gray-300'
+                }`}
               placeholder="Enter current password"
               disabled={loading}
               autoComplete="current-password"
@@ -292,9 +287,8 @@ const SettingForm = () => {
               type="password"
               id="newPassword"
               {...registerPwd('newPassword', { required: 'New password is required' })}
-              className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${
-                pwdErrors.newPassword ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${pwdErrors.newPassword ? 'border-red-500' : 'border-gray-300'
+                }`}
               placeholder="Enter new password"
               disabled={loading}
               autoComplete="new-password"
@@ -318,9 +312,8 @@ const SettingForm = () => {
                 required: 'Confirm password is required',
                 validate: (val) => val === getValues('newPassword') || 'Passwords do not match',
               })}
-              className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${
-                pwdErrors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-              }`}
+              className={`block w-full rounded-md border px-4 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-violet-500 focus:outline-none ${pwdErrors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                }`}
               placeholder="Confirm new password"
               disabled={loading}
               autoComplete="new-password"
@@ -333,7 +326,7 @@ const SettingForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-md bg-pink-500 py-3 text-white font-semibold hover:bg-violet-700 transition duration-200 disabled:opacity-50"
+            className="w-full rounded-md bg-indigo-600 py-3 text-white font-semibold hover:bg-indigo-700 transition duration-200 disabled:opacity-50"
           >
             {loading ? 'Changing...' : 'Change Password'}
           </button>

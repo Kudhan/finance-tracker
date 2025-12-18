@@ -15,8 +15,13 @@ const Dashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await api.get('/transaction/dashboard');
-      const respData = response.data;
+      const [dashboardRes, accountRes] = await Promise.all([
+        api.get('/transaction/dashboard'),
+        api.get('/account')
+      ]);
+
+      const respData = dashboardRes.data;
+      const accountsData = accountRes.data?.accounts || [];
 
       // Normalize keys & prepare chart data with lowercase keys for recharts
       const chartDataNormalized = (respData.ChartData || []).map((item) => ({
@@ -31,7 +36,7 @@ const Dashboard = () => {
         totalExpense: Number(respData.totalExpense) || 0,
         chartData: chartDataNormalized,
         lastTransactions: respData.lastTransactions || [],
-        lastAccounts: respData.lastAccounts || [],
+        lastAccounts: accountsData.slice(0, 4), // Take top 4 accounts
       });
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
@@ -51,14 +56,14 @@ const Dashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center w-full h-[80vh]">
+      <div className="flex items-center justify-center w-full h-[60vh]">
         <Loading />
       </div>
     );
   }
 
   if (!data) {
-    return <p className="text-center p-6">No data available.</p>;
+    return <p className="text-center p-6 text-slate-500">No data available.</p>;
   }
 
   const doughnutData = [
@@ -68,8 +73,8 @@ const Dashboard = () => {
   ];
 
   return (
-    <>
-      <Info title="Dashboard" subtitle="Your financial overview at a glance" />
+    <div className="w-full">
+      <Info title="Dashboard" subtitle="Overview of your financial health" />
 
       <Stats
         dt={{
@@ -79,19 +84,33 @@ const Dashboard = () => {
         }}
       />
 
-      <div className="flex flex-col-reverse md:flex-row items-center gap-10 w-full">
-        <Chart data={data.chartData} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        {/* Main Chart Section - spans 2 cols */}
+        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+          <Chart data={data.chartData} />
+        </div>
 
-        {(data.totalIncome > 0 || data.totalExpense > 0) && (
-          <DoughnutChart data={doughnutData} />
-        )}
+        {/* Doughnut Chart Section - spans 1 col */}
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col items-center justify-center">
+          {(data.totalIncome > 0 || data.totalExpense > 0) ? (
+            <DoughnutChart data={doughnutData} />
+          ) : (
+            <div className="text-center py-10 text-slate-400">
+              No data for chart
+            </div>
+          )}
+        </div>
       </div>
 
-      
-        
-        
-      
-    </>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+          <RecentTransactions data={data.lastTransactions} />
+        </div>
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+          <Accounts accounts={data.lastAccounts} />
+        </div>
+      </div>
+    </div>
   );
 };
 

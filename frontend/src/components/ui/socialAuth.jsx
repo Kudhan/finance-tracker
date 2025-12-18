@@ -37,7 +37,7 @@ const SocialAuth = ({ isLoading, setLoading }) => {
   const signInWithGoogle = async () => {
     setSelectedProvider("google");
     try {
-      
+
       setLoading(true);
       await signInWithPopup(auth, provider);
     } catch (error) {
@@ -48,63 +48,63 @@ const SocialAuth = ({ isLoading, setLoading }) => {
   };
 
   useEffect(() => {
-  const saveUserToDb = async () => {
-    if (!firebaseUser || alreadyHandled) return;
+    const saveUserToDb = async () => {
+      if (!firebaseUser || alreadyHandled) return;
 
-    setAlreadyHandled(true);
+      setAlreadyHandled(true);
 
-    try {
-      const userData = {
-        firstname: firebaseUser.displayName,
-        email: firebaseUser.email,
-        provider: selectedProvider,
-        uid: firebaseUser.uid,
-        password: Math.random().toString(36).slice(-10), // Random password (backend needs it)
-      };
+      try {
+        const userData = {
+          firstname: firebaseUser.displayName,
+          email: firebaseUser.email,
+          provider: selectedProvider,
+          uid: firebaseUser.uid,
+          password: Math.random().toString(36).slice(-10), // Random password (backend needs it)
+        };
 
-      const { data: res } = await api.post("/auth/signup", userData);
+        const { data: res } = await api.post("/auth/signup", userData);
 
-      if (res?.token) {
-        toast.success("Welcome back!");
-        const userInfo = { ...res.user, token: res.token };
-        localStorage.setItem("user", JSON.stringify(userInfo));
-        setCredentials(userInfo);
-        navigate("/overview");
-      } else {
-        toast.error("Failed to save user data");
+        if (res?.token) {
+          toast.success("Welcome back!");
+          const userInfo = { ...res.user, token: res.token };
+          localStorage.setItem("user", JSON.stringify(userInfo));
+          setCredentials(userInfo);
+          navigate("/overview");
+        } else {
+          toast.error("Failed to save user data");
+        }
+      } catch (error) {
+        console.error("Error saving user to DB:", error);
+
+        // ❗ If user doesn't exist in backend, sign them out + clear everything
+        if (error?.response?.status === 409 || error?.response?.status === 400) {
+          toast.error("User data invalid or already exists. Resetting...");
+
+          localStorage.removeItem("user");
+          setCredentials(null);
+
+          // Sign out from Firebase Auth
+          await auth.signOut();
+          setAlreadyHandled(false);
+          window.location.reload(); // force retry login
+        } else {
+          toast.error(error?.response?.data?.message || "Failed to save user");
+          setLoading(false);
+        }
       }
-    } catch (error) {
-      console.error("Error saving user to DB:", error);
+    };
 
-      // ❗ If user doesn't exist in backend, sign them out + clear everything
-      if (error?.response?.status === 409 || error?.response?.status === 400) {
-        toast.error("User data invalid or already exists. Resetting...");
-
-        localStorage.removeItem("user");
-        setCredentials(null);
-
-        // Sign out from Firebase Auth
-        await auth.signOut();
-        setAlreadyHandled(false);
-        window.location.reload(); // force retry login
-      } else {
-        toast.error(error?.response?.data?.message || "Failed to save user");
-        setLoading(false);
-      }
+    if (firebaseUser) {
+      saveUserToDb();
     }
-  };
-
-  if (firebaseUser) {
-    saveUserToDb();
-  }
-}, [firebaseUser, selectedProvider, navigate, setCredentials, setLoading, alreadyHandled]);
+  }, [firebaseUser, selectedProvider, navigate, setCredentials, setLoading, alreadyHandled]);
 
   return (
     <div className="flex items-center gap-2">
       <button
         onClick={signInWithGoogle}
         disabled={isLoading}
-        className="flex items-center justify-center gap-2 w-full bg-white dark:bg-slate-800 text-gray-800 dark:text-white border border-gray-300 dark:border-slate-700 rounded-lg px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors duration-200"
+        className="flex items-center justify-center gap-2 w-full bg-white text-gray-800 border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
         type="button"
       >
         <FcGoogle className="text-xl" />

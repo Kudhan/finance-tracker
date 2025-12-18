@@ -4,71 +4,64 @@ import { IoMdArrowDown, IoMdArrowUp } from "react-icons/io";
 import { SiCashapp } from "react-icons/si";
 
 const ICON_STYLES = [
-  "bg-blue-300 text-blue-800",
-  "bg-emerald-300 text-emerald-800",
-  "bg-rose-300 text-rose-800",
+  "bg-indigo-100 text-indigo-700",
+  "bg-emerald-100 text-emerald-700",
+  "bg-rose-100 text-rose-700",
 ];
 
 const Stats = ({ dt }) => {
   const data = [
     {
-      label: "Your Total Balance",
+      label: "Total Balance",
       amount: dt?.balance || 0,
       increase: 10.9,
-      icon: <BsCashCoin size={26} />,
+      icon: <BsCashCoin size={24} />,
     },
     {
       label: "Total Income",
       amount: dt?.income || 0,
       increase: 8.9,
-      icon: <BsCashCoin size={26} />,
+      icon: <BsCashCoin size={24} />,
     },
     {
       label: "Total Expense",
       amount: dt?.expense || 0,
       increase: -10.9,
-      icon: <SiCashapp size={26} />,
+      icon: <SiCashapp size={24} />,
     },
   ];
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between gap-8 2xl:gap-30 mb-20 ">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       {data.map((item, index) => (
         <div
           key={index + item.label}
-          className="w-full 2xl:min-w-96 flex items-center justify-between gap-5 px-4 md:px-8 py-12 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-900"
+          className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <div
-              className={`w-12 h-12 flex items-center justify-center rounded-full ${
-                ICON_STYLES[index]
-              }`}
+              className={`w-12 h-12 flex items-center justify-center rounded-xl ${ICON_STYLES[index]
+                }`}
             >
               {item.icon}
             </div>
 
-            <div className="space-y-3">
-              <span className="text-gray-600 dark:text-gray-400 text-base md:text-lg">
+            <div className="space-y-1">
+              <span className="text-slate-500 text-sm font-medium">
                 {item.label}
               </span>
-              <p className="text-2xl 2xl:text-3xl font-medium text-black dark:text-gray-400">
+              <p className="text-2xl font-bold text-slate-900">
                 ₹{item.amount.toLocaleString()}
               </p>
             </div>
           </div>
 
           <div>
-            <p
-              className={`flex gap-1 items-center text-base md:text-lg font-semibold ${
-                item.increase > 0 ? "text-emerald-500" : "text-red-500"
-              }`}
-            >
+            <div className={`flex items-center text-sm font-semibold ${item.increase > 0 ? "text-emerald-600" : "text-rose-600"}`}>
               {item.increase > 0 ? <IoMdArrowUp /> : <IoMdArrowDown />}
-              {Math.abs(item.increase)} %
-            </p>
-            <span className="text-xs md:text-sm text-gray-600 dark:text-gray-500">
-              Compare to last year
-            </span>
+              {Math.abs(item.increase)}%
+            </div>
+            <div className="text-xs text-slate-400 mt-1">vs last month</div>
           </div>
         </div>
       ))}

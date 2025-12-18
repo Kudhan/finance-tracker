@@ -16,7 +16,7 @@ const Input = forwardRef(
       {label && (
         <label
           htmlFor={id}
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="block text-sm font-medium text-gray-700"
         >
           {label}
         </label>
@@ -50,7 +50,7 @@ const Input = forwardRef(
       </div>
 
       {error && (
-        <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+        <p className="mt-2 text-sm text-red-600">
           {error}
         </p>
       )}
