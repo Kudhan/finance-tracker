@@ -1,81 +1,87 @@
-# 💰 Finance Glance – Personal Expense Tracker
+# Finance Glance - Professional Personal Expense Tracker
 
-🚀 [Live Demo](https://finance-tracker-ashen-two.vercel.app/)  
-📂 [GitHub Repository](https://github.com/Kudhan/finance-tracker)
+![Finance Glance Banner](https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1951&q=80)
 
----
+**Finance Glance** is a modern, full-stack personal finance application designed to help you take control of your financial future. With a professional SaaS-grade UI, smart insights, and intuitive tracking, managing your money has never been this tailored and efficient.
 
-## 📌 Overview
+## 🚀 Key Features
 
-**Finance Glance** is a full-stack web application that allows users to efficiently track and manage their personal finances. From viewing real-time transaction summaries to managing multiple account types (Cash, Cards, Crypto, Stocks), users get full control over their income and expenses with visual insights and intuitive design.
+### 🌟 Professional Dashboard
+- **Smart Financial Insights**: Get a real-time "Financial Health Score" (0-100) and personalized AI-driven advice based on your spending habits.
+- **Savings Goal Tracker**: Set custom goals (e.g., "New Car", "Emergency Fund") and visualize your progress.
+- **Interactive Charts**: Visualize income vs. expense trends and category breakdowns with beautiful doughnut and line charts.
 
-This project was fully developed by me as part of my internship journey, using modern web technologies to ensure a responsive, secure, and seamless user experience.
+### 💸 Comprehensive Transaction Management
+- **Professional Data Table**: Filter transactions by date range and search with a powerful, sticky-header table interface.
+- **Export Options**: Download your financial reports in **PDF** and **Excel (.xlsx)** formats for offline analysis.
+- **Smart Categorization**: Automatically categorize expenses and track them against your budget.
 
----
+### 💳 Account Management
+- **Multi-Account Support**: Track balances across Bank Accounts, Credit Cards, Cash, and Crypto wallets.
+- **Visual Cards**: Sleek, glass-morphic account cards with instant "Top Up" and management features.
 
-## 🧠 Key Features
-
-- 📊 Interactive dashboard with pie charts and transaction graphs
-- 🔐 Secure user authentication with Firebase and JWT
-- 🧾 Add, edit, and filter transactions by date and category
-- 💼 Manage multiple account types (Cash, Cards, Crypto, Stocks)
-- 💸 Transfer funds between internal accounts
-- ⚙️ User settings for profile and password updates
-- 📱 Fully responsive UI for desktop and mobile
-
----
+### 🔐 Secure & Modern
+- **Bank-Grade Security**: Built with industry-standard security practices.
+- **Modern UI/UX**: Fully responsive design with a premium "Violet/Indigo" aesthetic, ensuring a seamless experience across mobile and desktop.
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- React.js
-- Tailwind CSS
-- Firebase Authentication
-- React Icons
+**Frontend:**
+- **React.js** (Vite)
+- **Tailwind CSS** (Styling)
+- **Recharts** (Data Visualization)
+- **Framer Motion** (Animations)
+- **React Hook Form & Zod** (Validation)
+- **XLSX & jsPDF** (Data Export)
 
-### Backend
-- Node.js
-- Express.js
-- JWT Authentication
+**Backend:**
+- **Node.js & Express**
+- **PostgreSQL / MongoDB** (Database - *Specify your actual DB here*)
+- **JWT** (Authentication)
 
-### Database
-- PostgreSQL
+## ⚡ Getting Started
 
-### Deployment
-- Vercel (Frontend)
-- Render (Backend)
+### Prerequisites
+- Node.js (v16+)
+- npm or yarn
 
----
+### Installation
 
-## 🔧 Setup Instructions
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/Kudhan/finance-tracker.git
+    cd finance-tracker
+    ```
 
-### 1. Clone the Repository
+2.  **Install Front-end Dependencies**
+    ```bash
+    cd frontend
+    npm install
+    # Start the development server
+    npm run dev
+    ```
 
-git clone https://github.com/Kudhan/finance-tracker.git
-cd finance-tracker ``
+3.  **Install Back-end Dependencies**
+    ```bash
+    cd ../backend
+    npm install
+    # Start the backend server
+    npm start
+    ```
 
+4.  **Open your browser**
+    Navigate to `http://localhost:5173` to see the app in action.
 
-2. Install Dependencies
-bash
-Copy
-Edit
-npm install
-3. Configure Environment Variables
-Create a .env file in the root directory and add the following (replace with your actual keys):
+## 📸 Screenshots
 
-env
-Copy
-Edit
-DATABASE_URL=your_postgresql_connection_string
-JWT_SECRET=your_jwt_secret
-FIREBASE_API_KEY=your_firebase_api_key
-FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-FIREBASE_PROJECT_ID=your_project_id
-FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-FIREBASE_APP_ID=your_firebase_app_id
-4. Run the Development Server
-bash
-Copy
-Edit
-npm run dev
+| Dashboard | Transactions |
+|:---:|:---:|
+| *Smart insights and visual analytics* | *Professional filtering and export* |
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the generic MIT License.
