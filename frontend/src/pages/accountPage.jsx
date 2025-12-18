@@ -15,26 +15,10 @@ import AddMoney from '../components/addMoney';
 import TransferMoney from '../components/transferMoney';
 
 const ICONS = {
-  crypto: (
-    <div className="w-12 h-12 bg-amber-600 text-white flex items-center justify-center rounded-full">
-      <FaBtc size={26} />
-    </div>
-  ),
-  visa: (
-    <div className="w-12 h-12 bg-blue-600 text-white flex items-center justify-center rounded-full">
-      <RiVisaLine size={26} />
-    </div>
-  ),
-  cash: (
-    <div className="w-12 h-12 bg-rose-600 text-white flex items-center justify-center rounded-full">
-      <GiCash size={26} />
-    </div>
-  ),
-  paypal: (
-    <div className="w-12 h-12 bg-blue-700 text-white flex items-center justify-center rounded-full">
-      <SiPaypal size={26} />
-    </div>
-  ),
+  crypto: <FaBtc size={30} />,
+  visa: <RiVisaLine size={30} />,
+  cash: <GiCash size={30} />,
+  paypal: <SiPaypal size={30} />,
 };
 
 const formatCurrency = (amount) => {
@@ -89,54 +73,64 @@ const AccountPage = () => {
 
   return (
     <>
-      <div className="w-full py-10">
-        <div className="flex items-center justify-between px-6 mb-6">
-          <Title title="Accounts Information" />
+      <div className="w-full py-10 px-4">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">Your Accounts</h1>
+            <p className="text-slate-500 text-sm mt-1">Manage your bank accounts and cards.</p>
+          </div>
           <button
             onClick={() => setIsOpen(true)}
-            className="py-2 px-4 rounded bg-black text-white flex items-center gap-2"
+            className="py-2.5 px-5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-2 transition-all shadow-sm hover:shadow-md"
           >
-            <MdAdd size={22} />
-            <span>Add</span>
+            <MdAdd size={20} />
+            <span className="font-medium">Add Account</span>
           </button>
         </div>
 
         {data.length === 0 ? (
-          <div className="w-full flex items-center justify-center py-10 text-gray-600">
-            <span>No Account Found</span>
+          <div className="w-full flex flex-col items-center justify-center py-20 bg-slate-50 rounded-xl border border-dashed border-slate-300">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4 text-slate-400">
+              <MdAdd size={32} />
+            </div>
+            <p className="text-slate-600 font-medium">No accounts found</p>
+            <p className="text-slate-400 text-sm mt-1">Add your first account to get started.</p>
           </div>
         ) : (
-          <div className="w-full grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 py-10 gap-6 px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {data.map((acc, index) => (
-              <div key={index} className="w-full h-48 flex gap-4 bg-white border border-slate-200 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div>
-                  {ICONS[acc?.account_name?.toLowerCase()] || (
-                    <div className="w-12 h-12 bg-gray-500 text-white flex items-center justify-center rounded-full">
-                      ?
-                    </div>
-                  )}
-                </div>
-                <div className="space-y-2 w-full">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <p className="text-black text-2xl font-bold">{acc?.account_name}</p>
-                      <MdVerifiedUser size={26} className="text-emerald-600 ml-1" />
-                    </div>
-                    <AccountMenu
-                      addMoney={() => handleOpenAddMoney(acc)}
-                      transferMoney={() => handleTransferMoney(acc)} />
+              <div key={index} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 group">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-50 to-violet-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    {ICONS[acc?.account_name?.toLowerCase()] || (
+                      <div className="font-bold text-xl">{acc?.account_name?.charAt(0)}</div>
+                    )}
                   </div>
-                  <span className="text-gray-600 font-light leading-loose">{acc?.account_number}</span>
-                  <p className="text-xs text-gray-600">
-                    {new Date(acc?.createdat).toLocaleDateString('en-US', { dateStyle: 'full' })}
+                  <AccountMenu
+                    addMoney={() => handleOpenAddMoney(acc)}
+                    transferMoney={() => handleTransferMoney(acc)}
+                  />
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
+                    {acc?.account_name}
+                    {/* Optional: Add badge if primary or verified */}
+                  </h3>
+                  <p className="text-slate-400 text-sm font-mono tracking-wider mb-6">
+                    **** **** **** {acc?.account_number?.slice(-4) || '0000'}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <p className="text-xl text-gray-600 font-medium">{formatCurrency(acc?.account_balance)}</p>
+
+                  <div className="flex items-end justify-between border-t border-slate-100 pt-4">
+                    <div>
+                      <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Balance</p>
+                      <p className="text-2xl font-bold text-slate-900 mt-1">{formatCurrency(acc?.account_balance)}</p>
+                    </div>
                     <button
                       onClick={() => handleOpenAddMoney(acc)}
-                      className="text-sm outline-none text-violet-600 hover:underline"
+                      className="text-sm font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
                     >
-                      Add Money
+                      Top Up
                     </button>
                   </div>
                 </div>

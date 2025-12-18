@@ -8,6 +8,8 @@ import DoughnutChart from '../components/doughNutChart';
 import Chart from '../components/chart';
 import Accounts from '../components/accounts';
 import RecentTransactions from '../components/transactions';
+import SmartInsights from '../components/smartInsights';
+import SavingsGoal from '../components/savingsGoal';
 
 const Dashboard = () => {
   const [data, setData] = useState(null);
@@ -83,6 +85,15 @@ const Dashboard = () => {
           expense: data.totalExpense,
         }}
       />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div className="lg:col-span-2">
+          <SmartInsights income={data.totalIncome} expense={data.totalExpense} />
+        </div>
+        <div className="lg:col-span-1 h-full">
+          <SavingsGoal />
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Main Chart Section - spans 2 cols */}
