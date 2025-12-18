@@ -21,29 +21,30 @@
 - **Visual Cards**: Sleek, glass-morphic account cards with instant "Top Up" and management features.
 
 ### 🔐 Secure & Modern
-- **Bank-Grade Security**: Built with industry-standard security practices.
-- **Modern UI/UX**: Fully responsive design with a premium "Violet/Indigo" aesthetic, ensuring a seamless experience across mobile and desktop.
+- **Bank-Grade Security**: Built with industry-standard security practices (JWT, Bcrypt).
+- **Modern UI/UX**: Fully responsive mobile-first design with a premium "Violet/Indigo" aesthetic.
 
 ## 🛠️ Tech Stack
 
 **Frontend:**
-- **React.js** (Vite)
+- **React.js (Vite)**
 - **Tailwind CSS** (Styling)
 - **Recharts** (Data Visualization)
-- **Framer Motion** (Animations)
+- **Zustand** (State Management)
 - **React Hook Form & Zod** (Validation)
 - **XLSX & jsPDF** (Data Export)
 
 **Backend:**
 - **Node.js & Express**
-- **PostgreSQL / MongoDB** (Database - *Specify your actual DB here*)
-- **JWT** (Authentication)
+- **PostgreSQL** (Database)
+- **JWT** (Authentication) & **Bcrypt**
 
 ## ⚡ Getting Started
 
 ### Prerequisites
 - Node.js (v16+)
 - npm or yarn
+- PostgreSQL Database
 
 ### Installation
 
@@ -53,20 +54,35 @@
     cd finance-tracker
     ```
 
-2.  **Install Front-end Dependencies**
+2.  **Backend Setup**
     ```bash
-    cd frontend
+    cd backend
     npm install
-    # Start the development server
+    ```
+    Create a `.env` file in the `backend` folder:
+    ```env
+    DATABASE_URL=your_postgres_connection_string
+    JWT_SECRET=your_secret_key
+    NODE_ENV=development
+    PORT=5000
+    ```
+    Start the server:
+    ```bash
     npm run dev
     ```
 
-3.  **Install Back-end Dependencies**
+3.  **Frontend Setup**
     ```bash
-    cd ../backend
+    cd ../frontend
     npm install
-    # Start the backend server
-    npm start
+    ```
+    Create a `.env` file in the `frontend` folder:
+    ```env
+    VITE_API_URL=http://localhost:5000/api
+    ```
+    Start the client:
+    ```bash
+    npm run dev
     ```
 
 4.  **Open your browser**
