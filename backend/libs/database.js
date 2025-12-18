@@ -6,28 +6,20 @@ dotenv.config();
 
 const { Pool } = pg;
 
-// Use DATABASE_URL on Render — fall back to local DB if needed
-const connectionString =
-  process.env.DATABASE_URL || process.env.LOCAL_DATABASE_URL;
-
 const pool = new Pool({
-  connectionString,
+  connectionString: process.env.DATABASE_URL,
 
-  // REQUIRED for Supabase on Render
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
-      : false,
-
-  // 🔑 IMPORTANT: Force IPv4 (fixes ENETUNREACH on Render)
-  family: 4,
+  // ✅ REQUIRED for Supabase Pooler
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
-// Test connection (safe)
+// Test connection
 pool
   .connect()
   .then((client) => {
-    console.log("✅ Connected to Supabase PostgresQl");
+    console.log("✅ Connected to Supabase Postgres");
     client.release();
   })
   .catch((err) => {
