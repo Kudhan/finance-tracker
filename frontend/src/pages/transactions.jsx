@@ -129,7 +129,7 @@ const Transactions = () => {
   if (isLoading) return <Loading />;
 
   return (
-  return (
+
     <div className='w-full py-8 px-4'>
       <div className='flex flex-col md:flex-row md:items-center justify-between mb-8'>
         <div>
