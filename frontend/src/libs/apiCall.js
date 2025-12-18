@@ -1,8 +1,8 @@
 // libs/apiCall.js
 import axios from 'axios';
 
-//const DEFAULT_LOCAL = 'http://localhost:5000/api';
-const DEFAULT_LOCAL = 'https://finance-tracker-l3wq.onrender.com/api';
+const DEFAULT_LOCAL = 'http://localhost:5000/api';
+
 
 // Vite exposes env vars prefixed with VITE_ via import.meta.env
 const API_BASE = DEFAULT_LOCAL;
